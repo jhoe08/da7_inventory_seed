@@ -33,7 +33,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                         $result = mysqli_query($conn, $sql);
                         $max_bags = 0;
                         while ($row = mysqli_fetch_assoc($result)) {
-                            echo "<option value='" . $row['product_id'] . "'>" . htmlspecialchars($row['commodity'] . " - " . $row['variety'] . " - (x".$row['remaining_bags'].")") . "</option>";
+                            echo "<option data-maxBags=". $row['remaining_bags'] ." value='" . $row['product_id'] . "'>" . htmlspecialchars($row['commodity'] . " - " . $row['variety'] . " - (x".$row['remaining_bags'].")") . "</option>";
                             $max_bags = $row['bags_received'];
                         }
                         ?>

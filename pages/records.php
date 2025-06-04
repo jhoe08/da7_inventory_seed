@@ -51,6 +51,17 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                             $date_received = new DateTime($row["date_received"]);
                                             $today = new DateTime(); // Gets the current date
                                             $interval = $date_received->diff($today); // Calculates the difference
+                                            $age = $interval->days;
+                                            
+                                            if ($age <= 30) {
+                                                $class =  'green';
+                                            } elseif ($age <= 45) {
+                                                $class =  'orange';
+                                            } elseif ($age <= 60) {
+                                                $class = 'red';
+                                            } else {
+                                                $class = 'black'; // Default color
+                                            }
 
                                             echo "<tr>
                                                     <td>" . htmlspecialchars($row["category"]) . "</td>
@@ -63,7 +74,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                                     <td>" . htmlspecialchars($row["bags_received"]) . 
                                                         " <span class=''><i class='ti-angle-double-down text-green'></i><span> ". htmlspecialchars($row["remaining_bags"]) ."</span></span>" . "</td>
                                                     <td>" . htmlspecialchars($row["germination_test_date"]) . "</td>
-                                                    <td>" . htmlspecialchars($interval->days) . " days old</td>
+                                                    <td class=text-${class}>" . htmlspecialchars($age) . " days old</td>
                                                 </tr>";
                                         }
                                     } else {

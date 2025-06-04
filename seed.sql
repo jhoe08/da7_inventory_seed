@@ -31,6 +31,13 @@ CREATE TABLE da7_association (
     assoc_id INT AUTO_INCREMENT PRIMARY KEY,
     assoc_name VARCHAR(255) NOT NULL
 );
+-- Alter column
+ALTER TABLE da7_association
+ADD COLUMN province_id INT NOT NULL,
+ADD COLUMN lgu_id INT NOT NULL,
+ADD FOREIGN KEY (province_id) REFERENCES da7_province(province_id) ON DELETE CASCADE,
+ADD FOREIGN KEY (lgu_id) REFERENCES da7_lgu(lgu_id) ON DELETE CASCADE;
+
 
 -- Create the Distribution Table
 CREATE TABLE da7_distribution (

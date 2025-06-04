@@ -39,7 +39,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" />
     <!-- modernizr css -->
     <script src="../assets/js/vendor/modernizr-2.8.3.min.js"></script>
-
+    <!-- Chartjs -->    
+    <script src="../assets/js/Chart.min.js"></script>
 
     <style>
         table {
@@ -56,6 +57,9 @@
         }
         .text-green {
             color: greenyellow;
+        }
+        .text-orange {
+            color: rgb(255, 165, 0);
         }
     </style>       
 

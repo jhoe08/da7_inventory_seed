@@ -10,7 +10,8 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
     <div class="row">
         <div class="container mt-5">
             <h2 class="text-center">Enter Product Details</h2>
-            <form method="POST" action="../functions/additem.php">
+            
+            <form method="POST" action="../functions/addProduct.php">
                 <div class="form-group">
                     <label for="date_received">Date Delivered</label>
                     <input type="date" class="form-control" name="date_received" required>

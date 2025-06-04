@@ -61,7 +61,7 @@ $stmt->bind_param("sssssssss", $category, $commodity, $variety, $year, $batch, $
 // Execute the query and check for errors
 if ($stmt->execute()) {
   echo "<script>alert('Successfully stored');</script>";
-  header('Location: pages/stockin.php'); // Redirect on success
+  header('Location: ../functions/addProduct.php'); // Redirect on success
 } else {
   echo "<script>alert('Something went wrong: " . $stmt->error . "');</script>";
 }
