@@ -11,20 +11,31 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
     include '../functions/_database.php'; // Include database connection
     ?>  
     <div class="row">
-        <div class="col-md-4">
-            <ul class="list-group">
-            <?php
+        <div class="col-md-6">
+            <table class="basicDataTable">
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Province</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        $sql = "SELECT province_id, province_name FROM da7_province";
+                        $result = mysqli_query($conn, $sql);
 
-                $sql = "SELECT province_id, province_name FROM da7_province";
-                $result = mysqli_query($conn, $sql);
-
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<li class='list-group-item' value='" . $row['province_id'] . "'>" . htmlspecialchars($row['province_name']) . "</li>";
-                }
-            ?>
-            </ul>
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                                echo "<td>" . $row['province_id'] . "</td>";
+                                echo "<td>" . htmlspecialchars($row['province_name']) . "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </tbody>
+            </table>
+            <hr>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             <h2 class="text-center">Add Province</h2>
             <form action="../functions/addProvince.php" method="POST">
                 <div class="mb-3">
@@ -34,26 +45,33 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                 <button type="submit" class="btn btn-primary">Add Province</button>
             </form>
         </div>
-        <div class="col-md-4">
-            <ul class="list-group">
-            <?php
+        <div class="col-md-6">
+            <table class="basicDataTable">
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>LGU</td>
+                        <td>Province</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        $sql = "SELECT lgu_id, lgu_name, province_id FROM da7_lgu";
+                        $result = mysqli_query($conn, $sql);
 
-                $sql = "SELECT l.lgu_id, l.lgu_name, p.province_name 
-                        FROM da7_lgu l 
-                        INNER JOIN da7_province p ON l.province_id = p.province_id";
-
-                $result = mysqli_query($conn, $sql);
-
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<li class='list-group-item' value='" . $row['lgu_id'] . "'>";
-                    echo htmlspecialchars($row['lgu_name']) . " - " . htmlspecialchars($row['province_name']); // Shows LGU & Province
-                    echo "</li>";
-                }
-
-            ?>
-            </ul>
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                                echo "<td>" . $row['lgu_id'] . "</td>";
+                                echo "<td>" . htmlspecialchars($row['lgu_name']) . "</td>";
+                                echo "<td>" . getProvinceName($getProvinces, $row['province_id']) . "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </tbody>
+            </table>
+            <hr>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             <h2 class="text-center">Add New LGU</h2>
             <form action="../functions/addLGU.php" method="POST">
                 <div class="mb-3">
@@ -81,30 +99,34 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                 <button type="submit" class="btn btn-primary">Add LGU</button>
             </form>
         </div>
-        <div class="col-md-4">
-            <ul class="list-group">
-            <?php
+        <div class="col-md-6">
+            <table class="basicDataTable">
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Association Name</td>
+                        <td>LGU</td>
+                        <td>Province</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        $sql = "SELECT assoc_id, assoc_name, lgu_id, province_id FROM da7_association";
+                        $result = mysqli_query($conn, $sql);
 
-               $sql = "SELECT 
-                            a.assoc_id, 
-                            a.assoc_name, 
-                            l.lgu_name, 
-                            p.province_name 
-                        FROM da7_association a
-                        INNER JOIN da7_lgu l ON a.lgu_id = l.lgu_id
-                        INNER JOIN da7_province p ON l.province_id = p.province_id";
-
-                $result = mysqli_query($conn, $sql);
-
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<li class='list-group-item' value='" . $row['assoc_id'] . "'>";
-                    echo htmlspecialchars($row['assoc_name']) . " - " . htmlspecialchars($row['lgu_name']) . " (" . htmlspecialchars($row['province_name']) . ")";
-                    echo "</li>";
-                }
-            ?>
-            </ul>
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                                echo "<td>" . $row['assoc_id'] . "</td>";
+                                echo "<td>" . htmlspecialchars($row['assoc_name']) . "</td>";
+                                echo "<td>" . getLGUName($getLGUs, $row['lgu_id']) . "</td>";
+                                echo "<td>" . getProvinceName($getProvinces, $row['province_id']) . "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </tbody>
+            </table>            
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             <h2 class="text-center">Add Farmers Association</h2>
             <form action="../functions/addAssociation.php" method="POST">
                 

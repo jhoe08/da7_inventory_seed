@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="../assets/css/default-css.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link rel="stylesheet" href="../assets/css/responsive.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" />
+    <link rel="stylesheet" href="//cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" />
     <!-- modernizr css -->
     <script src="../assets/js/vendor/modernizr-2.8.3.min.js"></script>
     <!-- Chartjs -->    
@@ -60,6 +60,27 @@
         }
         .text-orange {
             color: rgb(255, 165, 0);
+        }
+        .dataTables_filter, .paging_simple_numbers {
+            text-align: right;
+        }
+        .dataTables_info {
+            padding: 20px 0;
+        }
+        .paging_simple_numbers .pagination {
+            justify-content: flex-end;
+        }
+        .dataTables_length label, 
+        .dataTables_filter label {
+            display: flex;
+            align-items: center;
+        }
+        .dataTables_filter label {
+            justify-content: flex-end;
+        }
+        .dataTables_filter input {
+            margin: 0 10px;
+            width: 50%;
         }
     </style>       
 

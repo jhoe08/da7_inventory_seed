@@ -31,7 +31,7 @@
 <!-- header area end -->
 <!-- page title area start -->
 <?#php if ($_SERVER['REQUEST_URI'] == "/") { ?>
-<div class="page-title-area">
+<div class="page-title-area mb-4">
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">

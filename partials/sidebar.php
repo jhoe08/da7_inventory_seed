@@ -29,16 +29,16 @@
                                 <a href="stockout.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock Out</a>
                             </li> 
 
-                            <li>
+                            <!-- <li>
                                 <a href="germination.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Germination Date</a>
-                            </li>                             
+                            </li>                              -->
 
 
                             <li>
                                 <a href="beneficiary.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View all Beneficiaries</a>
                             </li>
 
-                            <li>
+                            <!-- <li>
                                 <a href="#" aria-expanded="true"><i class="fa fa-edit"></i><span>Reports</span></a>
                             </li>
 
@@ -56,7 +56,7 @@
 
                             <li>
                                 <a href="report_print_beneficiary.php" target="_blank" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print Beneficiary</a>
-                            </li> 
+                            </li>  -->
 
                         </ul>
                     </nav>

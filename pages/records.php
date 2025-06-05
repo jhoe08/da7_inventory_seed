@@ -17,7 +17,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                     <h4 class="header-title">DA-RFO7 Seed Inventory System</h4>
                     <div class="single-table">
                         <div class="table-responsive">
-                            <table id="seeds-records" class="table text-dark text-center ">
+                            <table id="seeds-records" class="basicDataTable">
                                 <thead class="text-uppercase">
                                     <tr class="table-active">
                                         <th>Category</th>
@@ -37,7 +37,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                     include(dirname(__FILE__) .'/../functions/_database.php'); 
                                     
                                     $sql = "SELECT 
-                                                p.*,                                                 
+                                                p.*,
                                                 COALESCE(SUM(d.bags_distributed), 0) AS total_distributed,
                                                 (p.bags_received - COALESCE(SUM(d.bags_distributed), 0)) AS remaining_bags
                                             FROM da7_product p
@@ -63,7 +63,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                                 $class = 'black'; // Default color
                                             }
 
-                                            echo "<tr>
+                                            echo "<tr data-product-id=".$row["product_id"].">
                                                     <td>" . htmlspecialchars($row["category"]) . "</td>
                                                     <td>" . htmlspecialchars($row["commodity"]) . "</td>
                                                     <td>" . htmlspecialchars($row["variety"]) . "</td>
@@ -90,5 +90,8 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             </div>
         <div>
     </div>
+</div>
+
+</div>
 </div>
 <?php include_once(dirname(__FILE__) . "/../partials/footer.php"); ?>
