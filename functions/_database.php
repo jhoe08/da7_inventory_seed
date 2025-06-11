@@ -57,10 +57,20 @@ function getProvinceName($data, $id) {
     return "Province not found";
 }
 
-// Fetch data
+function getCategoryName($data, $id) {
+    foreach($data as $category) {
+        if ($category['category_id'] == $id) {
+            return $category['category_name'];
+        }
+    }
+}
+
+// Fetch location data
 $getLGUs = json_decode(getData($conn, $prefix . "lgu"), true);
 $getProvinces = json_decode(getData($conn, $prefix . "province"), true);
 
+// Fetch product data
+$getCategories = json_decode(getData($conn, $prefix . "categories"), true);
 
 // echo  var_dump($getLGUs);
 ?>

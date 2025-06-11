@@ -7,13 +7,20 @@
     <!-- dataTables -->
     <script src="../assets/js/vendor/dataTables-1.10.16.min.js"></script>
     <script>
-        // $.noConflict();
-        $('.basicDataTable').DataTable({
-            ordering: true,        // Enable ordering
-            paging: true,          // Enable pagination
-            searching: true,       // Enable searching
-            
-        });
+        if ($('.basicDataTable').attr('data-nosort') == "true") {
+            console.log('PAKSIT')
+            $('.basicDataTable').DataTable({
+                ordering: false,
+                paging: false,    
+            });
+        } else {
+            $('.basicDataTable').DataTable({
+                ordering: true,        // Enable ordering
+                paging: true,          // Enable pagination
+                searching: true,       // Enable searching
+                
+            });
+        }
 
     </script>
     <!-- bootstrap 4 js -->    
@@ -30,9 +37,7 @@
 
     <script src="../assets/js/pages/main.js"></script>
     <script src="../assets/js/pages/select.js"></script>
-
-    
+    <script src="../assets/js/pages/dome.js"></script>
     
 </body>
-
 </html>

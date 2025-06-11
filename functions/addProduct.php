@@ -41,27 +41,29 @@ if (isset($_POST['add'])) {
 
 
 
+// Escape user input to prevent SQL injection
 $date_received            = mysqli_real_escape_string($db, $_POST['date_received']);
 $category                 = mysqli_real_escape_string($db, $_POST['category']); 
 $commodity                = mysqli_real_escape_string($db, $_POST['commodity']);
 $variety                  = mysqli_real_escape_string($db, $_POST['variety']);
-$year                     = mysqli_real_escape_string($db, $_POST['year']);  
+$year                     = intval($_POST['year']);  // Convert to integer
 $batch                    = mysqli_real_escape_string($db, $_POST['batch']);
 $lot                      = mysqli_real_escape_string($db, $_POST['lot']);
-$bags_received            = mysqli_real_escape_string($db, $_POST['bags']);
+$bags_received            = intval($_POST['bags']);  // Convert to integer
 $germination_test_date    = mysqli_real_escape_string($db, $_POST['germination_test_date']);
+$remarks                  = mysqli_real_escape_string($db, $_POST['remarks']);
 
 // Prepare the INSERT query securely
-$stmt = $db->prepare("INSERT INTO da7_product (category, commodity, variety, year, batch, lot, date_received, bags_received, germination_test_date) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $db->prepare("INSERT INTO da7_product 
+                      (category, commodity, variety, year, batch, lot, date_received, bags_received, remarks, germination_test_date)  
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-// Bind user input securely
-$stmt->bind_param("sssssssss", $category, $commodity, $variety, $year, $batch, $lot, $date_received, $bags_received, $germination_test_date);
+// Bind user input securely with correct data types
+$stmt->bind_param("sssisssiss", $category, $commodity, $variety, $year, $batch, $lot, $date_received, $bags_received, $remarks, $germination_test_date);
 
 // Execute the query and check for errors
 if ($stmt->execute()) {
-  echo "<script>alert('Successfully stored');</script>";
-  header('Location: ../functions/addProduct.php'); // Redirect on success
+  echo "<script>alert('Product added successfully!'); window.location.href='../pages/stockin.php';</script>";
 } else {
   echo "<script>alert('Something went wrong: " . $stmt->error . "');</script>";
 }

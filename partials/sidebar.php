@@ -10,54 +10,61 @@
                     <nav>
                         <ul class="metismenu" id="menu">
                             <li>
-                                <a href="index.php" aria-expanded="true"><i class="ti-dashboard"></i><span>Dashboard</span></a>
-                                
+                                <a href="index.php" aria-expanded="true">
+                                    <i class="ti-dashboard"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="monolithicDome.php" aria-expanded="true">
+                                    <i class="ti-package"></i>
+                                    <span>Monolithic Dome</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="records.php" aria-expanded="true">
+                                    <i class="ti-menu-alt"></i>
+                                    <span>Item Records</span></a>
+                            </li>
+                            <li class="sub-menu">
+                                <a href="stockin.php" aria-expanded="true">Stock In</a>
                             </li>
                             
-                           
-                            
-                            <li>
-                                <a href="records.php" aria-expanded="true"><i class="fa fa-table"></i>
-                                    <span>Item Records</span></a>                           
-                            </li>
-
-                            <li>
-                                <a href="stockin.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock In</a>
-                            </li>
-                            
-                            <li>
-                                <a href="stockout.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock Out</a>
+                            <li class="sub-menu">
+                                <a href="stockout.php" aria-expanded="true">Stock Out</a>
                             </li> 
-
-                            <!-- <li>
-                                <a href="germination.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Germination Date</a>
-                            </li>                              -->
-
-
                             <li>
-                                <a href="beneficiary.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View all Beneficiaries</a>
+                                <a href="#" aria-expanded="true">
+                                    <i class="ti-folder"></i>
+                                    <span>Classifications</span>
+                                </a>
                             </li>
-
-                            <!-- <li>
-                                <a href="#" aria-expanded="true"><i class="fa fa-edit"></i><span>Reports</span></a>
+                            <li class="sub-menu">
+                                <a href="category.php" aria-expanded="true">Category</a>
                             </li>
-
-                            <li>
-                                <a href="report_commodity.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;By commodities</a>
+                            <li class="sub-menu">
+                                <a href="variety.php" aria-expanded="true">Variety</a>
+                            </li>
+                            <li class="sub-menu">
+                                <a href="commodity.php" aria-expanded="true">Commodity</a>
                             </li>
                             
-                            <li>
-                                <a href="report_stock.php" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No. of Remaining Bags</a>
-                            </li>   
-
-                            <li>
-                                <a href="report_print.php" target="_blank" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print Stock Reports</a>
-                            </li>                                                   
-
-                            <li>
-                                <a href="report_print_beneficiary.php" target="_blank" aria-expanded="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print Beneficiary</a>
-                            </li>  -->
-
+                            <li class="">
+                                <a href="beneficiary.php" aria-expanded="true">
+                                    <i class="ti-face-smile"></i>
+                                    <span>View all Beneficiaries</span>
+                                </a>
+                            </li>
+                             <li class="sub-menu">
+                                <a href="province.php" aria-expanded="true">Province</a>
+                            </li>
+                             <li class="sub-menu">
+                                <a href="LGU.php" aria-expanded="true">LGU</a>
+                            </li>
+                             <li class="sub-menu">
+                                <a href="association.php" aria-expanded="true">Association</a>
+                            </li>
+                            
                         </ul>
                     </nav>
                 </div>

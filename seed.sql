@@ -54,3 +54,30 @@ CREATE TABLE da7_distribution (
     FOREIGN KEY (lgu_id) REFERENCES da7_lgu(lgu_id) ON DELETE CASCADE,
     FOREIGN KEY (assoc_id) REFERENCES da7_association(assoc_id) ON DELETE CASCADE
 );
+
+CREATE TABLE da7_categories (
+    category_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    category_name VARCHAR(100) NOT NULL,
+    parent_id INT UNSIGNED DEFAULT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (parent_id) REFERENCES da7_categories(category_id) ON DELETE SET NULL
+);
+
+CREATE TABLE da7_varieties (
+    variety_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    variety_name VARCHAR(100) NOT NULL,
+    category_id INT UNSIGNED NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES da7_categories(category_id) ON DELETE CASCADE
+);
+
+CREATE TABLE da7_commodities (
+    commodity_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    commodity_name VARCHAR(100) NOT NULL,
+    category_id INT UNSIGNED NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES da7_categories(category_id) ON DELETE CASCADE
+);

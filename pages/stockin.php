@@ -6,7 +6,30 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
     <?php 
     $title_text = 'Stock In';
     $isBreadcrumbsOn = false;
-    include_once(dirname(__FILE__) . "/../partials/search.php"); ?>  
+    include_once(dirname(__FILE__) . "/../partials/search.php"); 
+    
+    include '../functions/_database.php';  
+    
+    // Fetch categories with parent names
+    $categories = [];
+    $result = $conn->query("SELECT category_id, category_name FROM da7_categories");
+    while ($row = $result->fetch_assoc()) {
+        $categories[] = $row;
+    }
+    
+    $varieties = [];
+    $result = $conn->query("SELECT variety_id, variety_name FROM da7_varieties");
+    while ($row = $result->fetch_assoc()) {
+        $varieties[] = $row;
+    }
+
+    $commodities = [];
+    $result = $conn->query("SELECT commodity_id, commodity_name FROM da7_commodities");
+    while ($row = $result->fetch_assoc()) {
+        $commodities[] = $row;
+    }
+
+    ?>  
     <div class="row">
         <div class="container mt-5">
             <h2 class="text-center">Enter Product Details</h2>
@@ -21,12 +44,9 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                     <label for="category">Category</label>
                     <select class="form-control form-select" name="category" required>
                         <option value="">Choose one</option>
-                        <option value="Rice_Prog_PSS">Rice_Prog_PSS</option>
-                        <option value="Rice_Prog_CHRF">Rice_Prog_CHRF</option>
-                        <option value="Rice_Prog_Seed_Reserved">Rice_Prog_Seed_Reserved</option>
-                        <option value="Private_Renting">Private_Renting</option>
-                        <option value="USF-Seeds">USF-Seeds</option>
-                        <option value="SWRCD-Seeds">SWRCD-Seeds</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= $category['category_name']; ?>"><?= $category['category_name']; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -34,9 +54,9 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                     <label for="commodity">Commodity</label>
                     <select class="form-control form-select" name="commodity" required>
                         <option value="">Choose one</option>
-                        <option value="Rice">Rice</option>
-                        <option value="Corn">Corn</option>
-                        <option value="Sorghum">Sorghum</option>
+                        <?php foreach ($commodities as $commodity): ?>
+                            <option value="<?= $commodity['commodity_name']; ?>"><?= $commodity['commodity_name']; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -44,10 +64,9 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                     <label for="variety">Variety</label>
                     <select class="form-control form-select" name="variety" required>
                         <option value="">Choose one</option>
-                        <option value="NSIC Rc 486H (LP534)">NSIC Rc 486H (LP534)</option>
-                        <option value="NSIC Rc 410H (Habilis Plus)">NSIC Rc 410H (Habilis Plus)</option>
-                        <option value="NSIC Rc 132H (SL8H)">NSIC Rc 132H (SL8H)</option>
-                        <option value="NSIC Rc 490H (Hatao Dinorado)">NSIC Rc 490H (Hatao Dinorado)</option>
+                        <?php foreach ($varieties as $variety): ?>
+                            <option value="<?= $variety['variety_name']; ?>"><?= $variety['variety_name']; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <?php
@@ -103,4 +122,6 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
         </div>
     </div>
 </div>
-<?php include_once(dirname(__FILE__) . "/../partials/footer.php"); ?>
+<?php 
+mysqli_close($conn);
+include_once(dirname(__FILE__) . "/../partials/footer.php"); ?>
