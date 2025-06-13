@@ -10,7 +10,10 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
     <div class="row">
         <div class="container mt-5">
             
-            <?php include '../functions/_database.php';  ?>
+            <?php 
+                include '../functions/_database.php';  
+                include '../functions/_const.php';  
+            ?>
 
             <h2 class="text-center">Enter Beneficiary Details</h2>
             <form method="POST" action="../functions/updateProductStocks.php">
@@ -28,8 +31,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                     (p.bags_received - COALESCE(SUM(d.bags_distributed), 0)) AS remaining_bags
                                 FROM da7_product p
                                 LEFT JOIN da7_distribution d ON p.product_id = d.product_id
-                                GROUP BY p.product_id, p.commodity, p.variety, p.bags_received;
-";
+                                GROUP BY p.product_id, p.commodity, p.variety, p.bags_received;";
                         $result = mysqli_query($conn, $sql);
                         $max_bags = 0;
                         while ($row = mysqli_fetch_assoc($result)) {
@@ -51,8 +53,8 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                 </div>
                 
                  <div class="form-group">
-                    <label for="association">Beneficiaries (Farmers Association) *</label>
-                    <select class="form-control form-select" name="assoc_id" required>
+                    <label for="association">Beneficiaries (Farmers Association) </label>
+                    <select class="form-control form-select" name="assoc_id">
                         <option value="">Select Association</option>
                         <?php
                         $sql = "SELECT assoc_id, assoc_name, province_id, lgu_id FROM da7_association";
@@ -91,6 +93,17 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                             echo "<option value='" . $row['province_id'] . "'>" . htmlspecialchars($row['province_name']) . "</option>";
                         }
                         
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="purpose">Purpose *</label>
+                    <select class="form-control form-select" name="purpose" required>
+                        <option value="">Select Purpose</option>
+                        <?php 
+                            foreach (DISTRIBUTIONPURPOSES as $purpose) {
+                                echo "<option value='" . htmlspecialchars($purpose) . "'>" . htmlspecialchars($purpose) . "</option>";
+                            }
                         ?>
                     </select>
                 </div>

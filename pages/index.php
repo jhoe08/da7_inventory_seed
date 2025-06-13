@@ -60,6 +60,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             }
     ?>
     <?php
+        // First Gen
         $sql = "SELECT
                     d.product_id,
                     d.date_distributed, 
@@ -70,6 +71,26 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                     p.bags_received
                 FROM da7_distribution d
                 JOIN da7_product p ON d.product_id = p.product_id;";
+        // Second Gen - after no result since no distribution of first gen
+        $sql = "SELECT 
+                    p.product_id,
+                    COALESCE(d.date_distributed, NULL) AS date_distributed,
+                    COALESCE(d.bags_distributed, 0) AS bags_distributed,
+                    COALESCE(d.remaining_bags, 0) AS remaining_bags,
+                    p.commodity,
+                    p.variety,
+                    p.bags_received
+                FROM da7_product p
+                LEFT JOIN da7_distribution d ON p.product_id = d.product_id;";
+        $sql = "SELECT 
+                    p.commodity, 
+                    p.variety, 
+                    p.category,
+                    SUM(p.bags_received) AS total_bags_received,
+                    SUM(COALESCE(d.bags_distributed, 0)) AS total_bags_distributed
+                FROM da7_product p
+                LEFT JOIN da7_distribution d ON p.product_id = d.product_id
+                GROUP BY p.commodity, p.variety, p.category;";
 
         $result = mysqli_query($conn, $sql);
         if (!$result) {
@@ -80,11 +101,13 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
         $lastRow = null;
 
         while ($row = mysqli_fetch_assoc($result)) {
-            $productId = $row['product_id'];
+            // $productId = $row['product_id'];
+            $productId = $row['variety'];
 
             if (!isset($graphsData[$productId])) {
                 $graphsData[$productId] = [
-                    "total_bags_received" => $row['bags_received'],
+                    // "total_bags_received" => $row['bags_received'],
+                    "total_bags_received" => $row['total_bags_received'],
                     "commodity" => $row['commodity'],
                     "variety" => $row['variety'],
                     "total_bags_distributed" => 0, // Initialize count
@@ -93,7 +116,8 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             }
 
             // Accumulate distributed and remaining bags per product
-            $graphsData[$productId]["total_bags_distributed"] += $row['bags_distributed'];
+            // $graphsData[$productId]["total_bags_distributed"] += $row['bags_distributed'];
+            $graphsData[$productId]["total_bags_distributed"] += $row['total_bags_distributed'];
             $graphsData[$productId]["total_bags_remaining"] = intval($graphsData[$productId]["total_bags_received"] - $graphsData[$productId]["total_bags_distributed"]);
         }
 

@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO da7_association (assoc_name, province_id, lgu_id) VALUES ('$assoc_name', '$province_id', '$lgu_id')";
 
     if (mysqli_query($conn, $sql)) {
-        echo "<script>alert('Association added successfully!'); window.location.href='../pages/settings.php';</script>";
+        echo "<script>alert('Association added successfully!'); window.location.href='../pages/association.php';</script>";
     } else {
         echo "<script>alert('Error: " . mysqli_error($conn) . "');</script>";
     }

@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO da7_lgu (lgu_name, province_id) VALUES ('$lgu_name', '$province_id')";
     
     if (mysqli_query($conn, $sql)) {
-        echo "<script>alert('LGU added successfully!'); window.location.href='../pages/settings.php';</script>";
+        echo "<script>alert('LGU added successfully!'); window.location.href='../pages/lgu.php';</script>";
     } else {
         echo "<script>alert('Error: " . mysqli_error($conn) . "');</script>";
     }

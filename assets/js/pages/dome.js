@@ -9,7 +9,7 @@ domeCells.forEach(function(td) {
 
 function showDetails(td) {
     if (td) {
-        var { label, purpose, layer } = td.dataset;
+        var { label, purpose, layer, variety } = td.dataset;
 
         var container = document.getElementById('showDetailsTD');
         var square = container.querySelector('.square')
@@ -22,16 +22,17 @@ function showDetails(td) {
             html += `<div class="layer-container">`; // Start wrapping div
             html += Object.entries(layer)
                 .map(([key, value]) => {
-                    const { bags, age } = value;
-                    totalBags += bags;
+                    const { bags, age, variety } = value;
+                    totalBags += parseInt(bags);
                     return `<span class="${(age >= 30 && age <= 59) ? "spoiling": (age >= 60) ? "spoiled" : ""}"><span class="label">Lot #${key}</span> ${bags} bags</span>`;
                 })
                 .join(""); // Convert array to string
             
             html += `</div>`; // Close wrapping div
         }
-
-        html += "<label>Total "+ totalBags + " bags</label>"
+        html += variety ? "<variety> "+ variety + "</variety>" : "";
+        html += purpose ? "<purpose> "+ purpose + "</purpose>" : "";
+        html += totalBags ? "<label>Total <br>"+ totalBags + " bags</label>" : "";
 
         square.innerHTML = html;
     }

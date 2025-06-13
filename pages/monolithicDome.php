@@ -8,9 +8,19 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
     $isBreadcrumbsOn = false;
     include_once(dirname(__FILE__) . "/../partials/search.php"); ?>  
 
-<?php 
+<?php
     include '../functions/_database.php';  
-    $sql = "SELECT * FROM `da7_product` ORDER BY lot;";
+     /* $sql = "SELECT * FROM `da7_product` ORDER BY lot;";
+    $sql = "SELECT 
+                p.*,  -- Select all columns from da7_product
+                d.date_distributed, 
+                d.bags_distributed, 
+                d.remaining_bags, 
+                d.purpose, 
+                d.remarks
+            FROM da7_product p
+            LEFT JOIN da7_distribution d ON p.product_id = d.product_id
+            ORDER BY p.lot;";
     $result = mysqli_query($conn, $sql);
     $cube = [];
     if (mysqli_num_rows($result) > 0) {
@@ -19,6 +29,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             $index = explode("_", $row["lot"])[1];
 
             $cube[$label][$index] = [
+                "variety" => $row["variety"],
                 "bags" => $row["bags_received"], 
                 "age" => (new DateTime($row["date_received"]))->diff(new DateTime())->days,
             ];
@@ -26,6 +37,43 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
     } 
     
     // $inventoryData = json_decode(json_encode($cube));
+    $inventoryData = json_encode($cube);
+    */ 
+    // SQL Query: Join `da7_product` with `da7_distribution`
+    $sql = "SELECT 
+                p.*,  
+                d.date_distributed, 
+                d.bags_distributed, 
+                d.remaining_bags, 
+                d.purpose, 
+                d.remarks
+            FROM da7_product p
+            LEFT JOIN da7_distribution d ON p.product_id = d.product_id
+            ORDER BY p.lot;";
+
+    $result = mysqli_query($conn, $sql);
+    $cube = [];
+
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $label = explode("_", $row["lot"])[0];
+            $index = explode("_", $row["lot"])[1];
+
+            // Deduct distributed bags from received bags
+            $bags_received = intval($row["bags_received"]);
+            $bags_distributed = intval($row["bags_distributed"]);
+            $remaining_bags = max(0, $bags_received - $bags_distributed); // Ensure no negative values
+
+            $cube[$label][$index] = [
+                "variety" => $row["variety"],
+                "bags" => $remaining_bags,  // Updated to reflect deducted bags
+                "age" => (new DateTime($row["date_received"]))->diff(new DateTime())->days,
+                "purpose" => $row["purpose"]
+            ];
+        }
+    } 
+
+    // Convert array to JSON
     $inventoryData = json_encode($cube);
 
     ?>    
@@ -39,7 +87,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             width: auto;
         }
         table.dome td {
-            width: 60px;
+            width: 50px;
             height: 50px;
             border: 1px solid black !important;
             text-align: left;
@@ -51,7 +99,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             cursor: pointer;
         }
         table.dome td:not(.empty):hover {
-            box-shadow: inset 0px 0px 10px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
         }
         table.dome tr.legend td {
             text-align: center;
@@ -64,6 +112,11 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             font-size: 8px;
             transform: rotate(-90deg);
             left: -10px;
+            visibility: hidden;
+        }
+        
+        table.dome tr:not(.legend) td.has_purpose:not(.empty):before { 
+            visibility: visible;
         }
         table.dome tr:not(.legend) td:not(.empty):after {
             content: "Lot # - # Bags";
@@ -99,7 +152,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             display: block;
             position: absolute;
             top: -18px;
-            font-size: 7px;
+            font-size: 6px;
             padding-right: 8px;
             text-align: left;
             line-height: 1.1;
@@ -108,7 +161,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
         #showDetailsTD {
             text-align: center;
         }
-        .square {
+        #showDetailsTD .square {
             width: 300px;
             aspect-ratio: 1 / 1;
             background-color: #ffffff;
@@ -119,34 +172,71 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             justify-content: flex-end;
         }
 
-        .square strong, .square label {
+        #showDetailsTD .square strong, 
+        #showDetailsTD .square label {
             position: absolute;
             bottom: 0;
             left: 10px;
             font-size: 40px;
         }
 
-        .square .layer-container {
+        #showDetailsTD .square label {
+            transform: translate(0%, -120%);
+            width: 90%;
+            left: 0px;
+            line-height: 1;
+        }
+
+        #showDetailsTD .square .layer-container {
             display: flex;
             flex-direction: column-reverse;
             justify-content: space-evenly;
             width: 80px;
         }
         
-        .square .layer-container .label {
+        #showDetailsTD .square .layer-container .label {
             display: block;
         }
         
+        #showDetailsTD .square variety {
+            position: absolute;
+            top: 0px;
+            left: 5px;
+            font-size: 32px;
+            text-align: left;
+            line-height: 1;
+        }
+
+        #showDetailsTD .square purpose {
+            position: absolute;
+            left: -68px;
+            bottom: 130px;
+            transform: rotate(-90deg);
+            font-size: 15px;
+        }
+
+
         td.spoiling,
-        .square .spoiling {
+        .square .spoiling,
+        .legends .square.spoiling {
             background-color: rgb(255 0 0 / 41%);
         }
 
         td.spoiled,
-        .square .spoiled {
+        .square .spoiled,
+        .legends .square.spoiled {
             background-color: rgb(0 0 0 / 41%);
         }
 
+        .legends .square {
+            width: 50px;
+            aspect-ratio: 1 / 1;
+            background-color: #ffffff;
+            border: 1px solid;
+            display: inline-block;
+            position: relative;
+        }
+        
     </style>
     <div class="row mt-5">
         <div class="col-md-6">
@@ -411,22 +501,22 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                 <td class="empty" colspan="14"></td>
                 </tr>
                 <tr class="legend">
-                <td class="empty" colspan="2"></td>
-                <td data-label="">A</td>
-                <td data-label="">B</td>
-                <td data-label="">C</td>
-                <td data-label="">D</td>
-                <td data-label="">E</td>
-                <td data-label="">F</td>
-                <td data-label="">G</td>
-                <td data-label="">H</td>
-                <td data-label="">I</td>
-                <td data-label="">J</td>
-                <td data-label="">K</td>
-                <td data-label="">L</td>
-                <td data-label="">M</td>
-                <td data-label="">N</td>
-                <td class="empty" colspan="2"></td>
+                    <td class="empty" colspan="2"></td>
+                    <td data-label="">A</td>
+                    <td data-label="">B</td>
+                    <td data-label="">C</td>
+                    <td data-label="">D</td>
+                    <td data-label="">E</td>
+                    <td data-label="">F</td>
+                    <td data-label="">G</td>
+                    <td data-label="">H</td>
+                    <td data-label="">I</td>
+                    <td data-label="">J</td>
+                    <td data-label="">K</td>
+                    <td data-label="">L</td>
+                    <td data-label="">M</td>
+                    <td data-label="">N</td>
+                    <td class="empty" colspan="2"></td>
                 </tr>
             </table>
         </div>
@@ -434,27 +524,63 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             <div id="showDetailsTD">
                 <div class="square"></div>
             </div>
+            <div class="legends mt-4">
+                <h4 class="mb-2">Legends: </h4>
+                <div class="legend dflex alignCenter mb-2">
+                    <div name="spoiled" class="square spoiled mr-2"></div>
+                    <label for="spoiled">Spoiled</label>
+                </div>
+                <div class="legend dflex alignCenter mb-2">
+                    <div name="Spoiling" class="square spoiling mr-2"></div>
+                    <label for="Spoiling">Spoiling</label>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-        // Get PHP JSON data
-        const data = <?php echo $inventoryData; ?>;
-        // Loop through each key in the data object
-        Object.keys(data).forEach(label => {
-            // Find the <td> element with the corresponding data-label
-            const element = document.querySelector(`td[data-label="${label}"]`);
+    const data = <?php echo $inventoryData; ?>;
 
-            // // Debugging: Log if element is found or not
-            // console.log(`Searching for td[data-label="${label}"]`, element);
+    // Loop through each key in the data object
+    Object.keys(data).forEach(label => {
+        // Find the <td> element with the corresponding data-label
+        const element = document.querySelector(`td[data-label="${label}"]`);
+        
+        // If element exists, set its data-layer attribute
+        if (element) {
+            element.setAttribute('data-layer', JSON.stringify(data[label]));
 
-            // If element exists, set its data-layer attribute
-            if (element) {
-                element.setAttribute('data-layer', JSON.stringify(data[label]));
+            // Extract the variety from the data object
+            let varietyEntry = Object.values(data[label]).find(({ variety }) => variety);
+            let variety = varietyEntry ? varietyEntry.variety : "";
+
+            // Extract the variety from the data object
+            let purposeEntry = Object.values(data[label]).find(({ purpose }) => purpose);
+            let purpose = purposeEntry ? purposeEntry.purpose : "";
+
+            // Set the data-variety attribute on the <td>
+            element.setAttribute('data-variety', variety);
+
+            // Set the data-purpose attribute on the <td>
+            element.setAttribute('data-purpose', purpose);
+            if(purpose) {
+                element.classList.add('has_purpose')
             }
-        });
 
+            // Check if a .variety div already exists, if not, create one
+            let varietyDiv = element.querySelector(".variety");
+            if (!varietyDiv) {
+                varietyDiv = document.createElement("div");
+                varietyDiv.classList.add("variety");
+                element.appendChild(varietyDiv);
+            }
+
+            // Set the data-variety attribute on the newly created or existing .variety div
+            varietyDiv.setAttribute("data-variety", variety);
+            // varietyDiv.textContent = variety; // Display the variety inside the div
+        }
+    });
 </script>
 <?php 
 mysqli_close($conn);
