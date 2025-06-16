@@ -109,7 +109,7 @@ if(isset($_POST['submit']))
         $_SESSION['first_name'] =$row["first_name"];
 		
 		$_SESSION['last_name'] =$row["last_name"];
-        header('location: index.php');
+        header('location: pages/index.php');
       }
       else 
       {

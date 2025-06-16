@@ -63,6 +63,17 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                                 $class = 'black'; // Default color
                                             }
 
+                                            $remaining_bags = $row["remaining_bags"];
+                                            $color_class = '';
+                                            if ($remaining_bags >= 30) {
+                                                $color_class = 'text-green';
+                                            } elseif ($remaining_bags >= 20 && $remaining_bags <= 30) {
+                                                $color_class = 'text-orange';
+                                            } elseif ($remaining_bags >= 1 && $remaining_bags < 20) {
+                                                $color_class = 'text-red';
+                                            }
+
+
                                             echo "<tr data-product-id=".$row["product_id"].">
                                                     <td>" . htmlspecialchars($row["category"]) . "</td>
                                                     <td>" . htmlspecialchars($row["commodity"]) . "</td>
@@ -72,7 +83,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                                     <td>" . htmlspecialchars($row["lot"]) . "</td>
                                                     <td>" . htmlspecialchars($row["date_received"]) . "</td>
                                                     <td>" . htmlspecialchars($row["bags_received"]) . 
-                                                        " <span class=''><i class='ti-angle-double-down text-green'></i><span> ". htmlspecialchars($row["remaining_bags"]) ."</span></span>" . "</td>
+                                                        " <span class=''><i class='ti-angle-double-down ". $color_class ."'></i><span> ". htmlspecialchars($row["remaining_bags"]) ."</span></span>" . "</td>
                                                     <td>" . htmlspecialchars($row["germination_test_date"]) . "</td>
                                                     <td class=text-${class}>" . htmlspecialchars($age) . " days old</td>
                                                 </tr>";

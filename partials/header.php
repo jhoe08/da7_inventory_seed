@@ -60,6 +60,9 @@
         .text-orange {
             color: rgb(255, 165, 0);
         }
+        .text-red {
+            color: red;
+        }
         .dataTables_filter, .paging_simple_numbers {
             text-align: right;
         }

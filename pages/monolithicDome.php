@@ -114,10 +114,6 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             left: -10px;
             visibility: hidden;
         }
-        
-        table.dome tr:not(.legend) td.has_purpose:not(.empty):before { 
-            visibility: visible;
-        }
         table.dome tr:not(.legend) td:not(.empty):after {
             content: "Lot # - # Bags";
             position: absolute;
@@ -125,6 +121,11 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             transform: rotate(90deg);
             top: 18px;
             right: -20px;
+            visibility: hidden;
+        }
+        table.dome tr:not(.legend) td.has_purpose:not(.empty):before,
+        table.dome tr:not(.legend) td.has_layer:not(.empty):after { 
+            visibility: visible;
         }
         table.dome .empty {
             border: none !important;
@@ -244,16 +245,12 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                 <!-- Row 1 -->
                 <tr>
                     <td class="empty" colspan="6"></td>
-                    <td data-variety="NSIC Rc 486H (LP534)" data-label="E15" data-purpose="" data-layer='{"1": {"bags": 100, "age": 31},"2": {"bags": 100, "age": 31},"3": {"bags": 0, "age": 0},"4": {"bags": 0, "age": 0},"5": {"bags": 100, "age": 31}}'>
-                        15
-                        <div class="variety">100</div>
-                    </td>
-
-                    <td data-label="F16">16 <div class="variety">100</div></td>
-                    <td data-label="G16">16 <div class="variety">100</div></td>
-                    <td data-label="H16">16 <div class="variety">21</div></td>
-                    <td data-label="I16">16 <div class="variety">100</div></td>
-                    <td data-label="J15">15 <div class="variety">100</div></td>
+                    <td data-label="E15">15</td>
+                    <td data-label="F16">16</td>
+                    <td data-label="G16">16</td>
+                    <td data-label="H16">16</td>
+                    <td data-label="I16">16</td>
+                    <td data-label="J15">15</td>
                     <td class="empty" colspan="6"></td>
                 </tr>
                 <!-- Row 2 -->
@@ -549,7 +546,11 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
         
         // If element exists, set its data-layer attribute
         if (element) {
-            element.setAttribute('data-layer', JSON.stringify(data[label]));
+            let layerData = JSON.stringify(data[label])
+            let setLayer = element.setAttribute('data-layer', layerData);
+            if(layerData) {
+                element.classList.add('has_layer')
+            }
 
             // Extract the variety from the data object
             let varietyEntry = Object.values(data[label]).find(({ variety }) => variety);

@@ -21,7 +21,7 @@
                 <h4 class="user-name dropdown-toggle" data-toggle="dropdown"><?php echo $_SESSION['username']; ?> <i class="fa fa-angle-down"></i></h4>
                 <div class="dropdown-menu">  
                     <a class="dropdown-item" href="/pages/settings.php">Settings</a>
-                    <a class="dropdown-item" href="index.php?logout='1'">Log Out</a>
+                    <a class="dropdown-item" href="../index.php?logout='1'">Log Out</a>
                 </div>
             </div>
         </div>
