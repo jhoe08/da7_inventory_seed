@@ -93,6 +93,16 @@
         .pull-right {
             float: right;
         }
+        span.inventory {
+            display: flex;
+            justify-content: center;
+        }
+        span.inventory i {
+            padding: 0 8px;
+        }
+        #seeds-records .btn {
+            padding: 5px 10px; 
+        }
     </style>       
 
 

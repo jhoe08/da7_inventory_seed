@@ -37,12 +37,17 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                     include(dirname(__FILE__) .'/../functions/_database.php'); 
                                     
                                     $sql = "SELECT 
-                                                p.*,
-                                                COALESCE(SUM(d.bags_distributed), 0) AS total_distributed,
-                                                (p.bags_received - COALESCE(SUM(d.bags_distributed), 0)) AS remaining_bags
+                                                p.*, 
+                                                COALESCE(SUM(d.bags_distributed), 0) AS total_distributed, 
+                                                (p.bags_received - COALESCE(SUM(d.bags_distributed), 0)) AS remaining_bags,
+                                                gt.date_started,
+                                                gt.percentage,
+                                                gt.results
                                             FROM da7_product p
                                             LEFT JOIN da7_distribution d ON p.product_id = d.product_id
-                                            GROUP BY p.product_id, p.commodity, p.variety, p.bags_received"; // Correct concatenation
+                                            LEFT JOIN da7_germination_tests gt ON p.product_id = gt.product_id
+                                            GROUP BY p.product_id, p.commodity, p.variety, p.bags_received, 
+                                                    gt.date_started, gt.percentage, gt.results;"; // Correct concatenation
                                     $result = mysqli_query($conn, $sql);
 
                                     if (mysqli_num_rows($result) > 0) {
@@ -63,17 +68,42 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                                 $class = 'black'; // Default color
                                             }
 
+                                            $bags_received = $row["bags_received"];
                                             $remaining_bags = $row["remaining_bags"];
+                                            $germination_date = $row["germination_test_date"];
+
                                             $color_class = '';
+                                            $icon = 'ti-angle-double-down';
+
+                                            // if ($bags_received >= $remaining_bags) {
+                                            //     $icon = 'ti-angle-double-down';
+                                            // }
+                                                                                        
                                             if ($remaining_bags >= 30) {
+                                                $icon = 'ti-stats-up';
                                                 $color_class = 'text-green';
                                             } elseif ($remaining_bags >= 20 && $remaining_bags <= 30) {
+                                                $icon = 'ti-stats-up';
                                                 $color_class = 'text-orange';
                                             } elseif ($remaining_bags >= 1 && $remaining_bags < 20) {
+                                                $icon = 'ti-stats-down';
                                                 $color_class = 'text-red';
                                             }
 
+                                            $classes = $icon ." ". $color_class;
 
+                                            $setDateHTML = "<i class='ti-calendar'></i>";
+                                            $btnClass = "btn-info";
+                                            
+                                            $setResults = "";
+
+                                            if ($germination_date) {
+                                                $setDateHTML = "<i class='ti-alarm-clock'></i>";
+                                                $setResults = '<button type="button" class="btn" data-toggle="modal" data-target="#germinationAddModal" title="Add Results" data-product-id="'.$row["product_id"].'" data-date-started="'.$germination_date.'">
+                                                        <i class="ti-pencil-alt"></i></button>';
+                                                $btnClass = "btn-warning";
+                                            }
+                                            
                                             echo "<tr data-product-id=".$row["product_id"].">
                                                     <td>" . htmlspecialchars($row["category"]) . "</td>
                                                     <td>" . htmlspecialchars($row["commodity"]) . "</td>
@@ -82,10 +112,14 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                                     <td>" . htmlspecialchars($row["batch"]) . "</td>
                                                     <td>" . htmlspecialchars($row["lot"]) . "</td>
                                                     <td>" . htmlspecialchars($row["date_received"]) . "</td>
-                                                    <td>" . htmlspecialchars($row["bags_received"]) . 
-                                                        " <span class=''><i class='ti-angle-double-down ". $color_class ."'></i><span> ". htmlspecialchars($row["remaining_bags"]) ."</span></span>" . "</td>
-                                                    <td>" . htmlspecialchars($row["germination_test_date"]) . "</td>
-                                                    <td class=text-${class}>" . htmlspecialchars($age) . " days old</td>
+                                                    <td>" . 
+                                                        "<span class='inventory'><span>" . htmlspecialchars($row["bags_received"]) ."</span>".
+                                                            "<i class='$classes'></i>" .
+                                                            "<span class=".$color_class."> ". htmlspecialchars($row["remaining_bags"]) ."</span>" . 
+                                                        "</span>" . "</td>
+                                                    <td><button type='button' class='btn ".$btnClass."' data-toggle='modal' data-target='#".($germination_date ? 'germinationWaitingModal' : 'germinationModal')."' title='".($germination_date ? 'Germinating...' : 'Add Germination Date')."' data-product-id=".$row["product_id"]." data-date-started=".htmlspecialchars($germination_date).">
+                                                        ".$setDateHTML."</button>".$setResults."</td>
+                                                    <td class='text-${class}'>" . htmlspecialchars($age) . " days old</td>
                                                 </tr>";
                                         }
                                     } else {
@@ -105,4 +139,10 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
 
 </div>
 </div>
-<?php include_once(dirname(__FILE__) . "/../partials/footer.php"); ?>
+<?php 
+include_once(dirname(__FILE__) . "/../modals/displayProductGermination.php");
+include_once(dirname(__FILE__) . "/../modals/updateProductGermination.php");
+include_once(dirname(__FILE__) . "/../modals/addProductGermination.php");
+
+mysqli_close($conn);
+include_once(dirname(__FILE__) . "/../partials/footer.php"); ?>

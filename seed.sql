@@ -81,3 +81,12 @@ CREATE TABLE da7_commodities (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES da7_categories(category_id) ON DELETE CASCADE
 );
+
+CREATE TABLE da7_germination_tests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    date_started DATE NOT NULL,
+    percentage DECIMAL(5,2) NOT NULL,
+    results VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

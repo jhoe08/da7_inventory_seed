@@ -1,3 +1,5 @@
+
+
 var domeCells = document.querySelectorAll('table.dome td'); // Select all <td> inside table with class "dome"
 
 // Loop through each <td> and add event listener
