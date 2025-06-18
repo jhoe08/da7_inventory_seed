@@ -1,0 +1,2 @@
+# Page not found
+ErrorDocument 404 /redirect.php

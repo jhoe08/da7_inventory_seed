@@ -10,78 +10,40 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
     include_once(dirname(__FILE__) . "/../partials/search.php"); 
     
     include '../functions/_database.php'; // Include database connection
+
+
 ?>  
-    <h3 class="mb-5">Commodities Aged Over 30 to 45 Days</h3>
-    <div class="row mb-5">
-    <?php 
-        $sql = "SELECT * FROM da7_product
-                WHERE DATEDIFF(CURDATE(), date_received) BETWEEN 30 AND 45;";
+    
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Distribution Breakdown by Variety</h3>
+            <div id="inventoryGraph"></div>
+        </div>
+        <div class="col-md-4">
+            <h3>Breakdown by Category</h3>
+            <canvas id="commodity30to45PieChart"></canvas>
+        </div>
+    </div>
+    
+    
+    <?php
+        $graphPie30to45Data = [];
+        $sql = "SELECT category, commodity, variety, COUNT(*) AS total_count FROM da7_product GROUP BY category, commodity, variety";
+
         $result = mysqli_query($conn, $sql);
         if (!$result) {
             die("Query failed: " . mysqli_error($conn));
         }
-        while ($row = mysqli_fetch_assoc($result)) { ?>
-        <div class="col-md-3 card border-dark mb-3" style="max-width: 18rem;">
-            <div class="card-header">Lot <?php echo $row['lot']; ?> Batch <?php echo $row['batch']; ?></div>
-            <div class="card-body">
-                <h5 class="card-title">#<?php echo $row['product_id']; ?> Variety <?php echo $row['variety']; ?></h5>
-                <p class="card-text">Category: <?php echo $row['category']; ?></p>
-            </div>
-        </div>   
-    <?php } ?>
-    </div>
-
-    <h3>Distribution Breakdown by Variety</h3>
-    <div id="inventoryGraph"></div>
-    
-    <?php
-        $graphPie30to45Data = [];
-        $sql = "SELECT c.commodity, COALESCE(p.total_count, 0) AS total_count
-        FROM (
-            SELECT DISTINCT commodity FROM da7_product
-        ) c
-        LEFT JOIN (
-            SELECT commodity, COUNT(*) AS total_count
-            FROM da7_product
-            WHERE DATEDIFF(CURDATE(), date_received) BETWEEN 30 AND 45
-            GROUP BY commodity
-        ) p ON c.commodity = p.commodity;";
-
-
-            $result = mysqli_query($conn, $sql);
-            if (!$result) {
-                die("Query failed: " . mysqli_error($conn));
-            }
-            while ($row = mysqli_fetch_assoc($result)) {
-                $graphPie30to45Data[] = [
-                    "commodity" => $row['commodity'],
-                    "total_count" => intval($row['total_count'])
-                ];
-            }
+        while ($row = mysqli_fetch_assoc($result)) {
+            $graphPie30to45Data[] = [
+                "category" => $row['category'],
+                "variety" => $row['variety'],
+                "commodity" => $row['commodity'],
+                "total_count" => intval($row['total_count'])
+            ];
+        }
     ?>
     <?php
-        // First Gen
-        $sql = "SELECT
-                    d.product_id,
-                    d.date_distributed, 
-                    d.bags_distributed, 
-                    d.remaining_bags, 
-                    p.commodity, 
-                    p.variety, 
-                    p.bags_received
-                FROM da7_distribution d
-                JOIN da7_product p ON d.product_id = p.product_id;";
-        // Second Gen - after no result since no distribution of first gen
-        $sql = "SELECT 
-                    p.product_id,
-                    COALESCE(d.date_distributed, NULL) AS date_distributed,
-                    COALESCE(d.bags_distributed, 0) AS bags_distributed,
-                    COALESCE(d.remaining_bags, 0) AS remaining_bags,
-                    p.commodity,
-                    p.variety,
-                    p.bags_received
-                FROM da7_product p
-                LEFT JOIN da7_distribution d ON p.product_id = d.product_id;";
         $sql = "SELECT 
                     p.commodity, 
                     p.variety, 
@@ -146,7 +108,7 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
 
         Object.keys(barData).forEach(productId => {
             let colDiv = document.createElement("div");
-            colDiv.className = "col-md-4"; // Wrap canvas in col-md-4
+            colDiv.className = "col-md-6"; // Wrap canvas in col-md-4
             container.appendChild(colDiv);
 
             let canvas = document.createElement("canvas");
@@ -196,12 +158,12 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
 
         // Pie
         const pieData = <?php echo json_encode($graphPie30to45Data); ?>;
-        const labels = pieData.map(row => row.commodity);
+        const labels = pieData.map(row => `${row.category} - ${row.commodity} - ${row.variety}`);
         const totalCounts = pieData.map(row => row.total_count);
 
-        console.log(labels)
-
-        new Chart(document.getElementById("commodity30to45PieChart"), {
+        console.log({pieData, labels, totalCounts})
+        perCatandVar = document.getElementById("commodity30to45PieChart").getContext('2d')
+        new Chart(perCatandVar, {
             type: 'pie',
             data: {
                 labels: labels,
@@ -227,6 +189,22 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                         }
                     }
                 }
+            }
+        });
+        // const labels = data.map(item => `${item.category} - ${item.commodity} - ${item.variety}`);
+        // const values = data.map(item => item.total_count);
+
+        const ctx = document.getElementById('commodity30to45PieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Commodity Distribution',
+                    data: totalCounts,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#FF9800'],
+                    hoverOffset: 4
+                }]
             }
         });
 

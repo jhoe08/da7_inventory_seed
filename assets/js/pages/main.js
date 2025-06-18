@@ -50,42 +50,40 @@ if(selectAssoc) {
 
     })
 }
-
-if(germinationModal) {
-    $('#germinationModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var product_id = button.data('product-id') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        // modal.find('.modal-title').text('New message to ' + recipient)
-        modal.find('.modal-body input[name="product_id"]').val(product_id)
-    })
+function setupModal(modalId, callback) {
+    $(modalId).on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var modal = $(this);
+        callback(button, modal);
+    });
 }
 
-if(germinationWaitingModal) {
-    $('#germinationWaitingModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var date_started = button.data('date-started') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        console.log(date_started)
-        // modal.find('.modal-title').text('New message to ' + recipient)
-        modal.find('.modal-body .date_started').text(date_started)
-    })
-}
+// Germination Modal
+setupModal('#germinationModal', function (button, modal) {
+    modal.find('.modal-body input[name="product_id"]').val(button.data('product-id'));
+});
 
-if(germinationAddModal) {
-    $('#germinationAddModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var product_id = button.data('product-id') // Extract info from data-* attributes
-        var date_started = button.data('date-started')
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        // modal.find('.modal-title').text('New message to ' + recipient)
-        modal.find('.modal-body input[name="product_id"]').val(product_id).prop("readonly", true);
-        modal.find('.modal-body input[name="test_date"]').val(date_started).prop("readonly", true);
-    })
-}
+// Germination Waiting Modal
+setupModal('#germinationWaitingModal', function (button, modal) {
+    var date_started = button.data('date-started');
+    console.log(date_started);
+    modal.find('.modal-body .date_started').text(date_started);
+});
+
+// Germination Add Modal
+setupModal('#germinationAddModal', function (button, modal) {
+    var product_id = button.data('product-id');
+    var date_started = button.data('date-started');
+    var percentage = button.data('percentage');
+    var results = button.data('results');
+
+    modal.find('.modal-body input[name="product_id"]').val(product_id).prop("readonly", true);
+    modal.find('.modal-body input[name="test_date"]').val(date_started).prop("readonly", true);
+
+        modal.find('.modal-body input[name="percentage"]').val(percentage).prop("readonly", true);
+        modal.find('.modal-body textarea[name="test_results"]').val(results).prop("readonly", true);
+    
+    if (percentage) {
+        modal.find('.modal-body button[type="submit"]').prop('disabled', true);
+    }
+});

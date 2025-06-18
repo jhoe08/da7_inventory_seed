@@ -17,8 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     SET percentage = ?, results = ? 
                     WHERE product_id = ? AND date_started = ?";
 
-    echo $updateQuery;
-
     $updateStmt = $conn->prepare($updateQuery);
 
     if (!$updateStmt) {
@@ -29,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $updateStmt->bind_param("dsis", $percentage, $test_results, $product_id, $test_date);
 
     if ($updateStmt->execute()) {
-        // echo "<script>alert('Germination Test Results was updated successfully!'); window.location.href='../pages/records.php';</script>";
+        echo "<script>alert('Germination Test Results was updated successfully!'); window.location.href='../pages/records.php';</script>";
     } else {
         echo "Error updating record: " . $conn->error;
     }

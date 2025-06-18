@@ -52,59 +52,74 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
 
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($row = mysqli_fetch_assoc($result)) {
-
                                             $date_received = new DateTime($row["date_received"]);
-                                            $today = new DateTime(); // Gets the current date
-                                            $interval = $date_received->diff($today); // Calculates the difference
-                                            $age = $interval->days;
-                                            
-                                            if ($age <= 30) {
-                                                $class =  'green';
-                                            } elseif ($age <= 45) {
-                                                $class =  'orange';
-                                            } elseif ($age <= 60) {
-                                                $class = 'red';
-                                            } else {
-                                                $class = 'black'; // Default color
-                                            }
+                                            $today = new DateTime();
+                                            $age = $date_received->diff($today)->days;
+
+                                            // Determine age-based class
+                                            $class = match (true) {
+                                                $age <= 30 => 'green',
+                                                $age <= 45 => 'orange',
+                                                $age <= 60 => 'red',
+                                                default => 'black',
+                                            };
 
                                             $bags_received = $row["bags_received"];
                                             $remaining_bags = $row["remaining_bags"];
                                             $germination_date = $row["germination_test_date"];
+                                            $percentage = $row["percentage"];
 
-                                            $color_class = '';
-                                            $icon = 'ti-angle-double-down';
+                                            // Determine inventory status
+                                            [$icon, $color_class] = match (true) {
+                                                $remaining_bags >= 30 => ['ti-stats-up', 'text-green'],
+                                                $remaining_bags >= 20 => ['ti-stats-up', 'text-orange'],
+                                                $remaining_bags >= 1 => ['ti-stats-down', 'text-red'],
+                                                default => ['ti-angle-double-down', ''],
+                                            };
 
-                                            // if ($bags_received >= $remaining_bags) {
-                                            //     $icon = 'ti-angle-double-down';
-                                            // }
-                                                                                        
-                                            if ($remaining_bags >= 30) {
-                                                $icon = 'ti-stats-up';
-                                                $color_class = 'text-green';
-                                            } elseif ($remaining_bags >= 20 && $remaining_bags <= 30) {
-                                                $icon = 'ti-stats-up';
-                                                $color_class = 'text-orange';
-                                            } elseif ($remaining_bags >= 1 && $remaining_bags < 20) {
-                                                $icon = 'ti-stats-down';
-                                                $color_class = 'text-red';
-                                            }
-
-                                            $classes = $icon ." ". $color_class;
-
+                                            $classes = "$icon $color_class";
                                             $setDateHTML = "<i class='ti-calendar'></i>";
-                                            $btnClass = "btn-info";
-                                            
-                                            $setResults = "";
+                                            $btnClass = "btn-warning";
+                                            $testResults = htmlspecialchars($row["results"] ?? "");
 
+
+                                            // Update button properties if germination date exists
                                             if ($germination_date) {
                                                 $setDateHTML = "<i class='ti-alarm-clock'></i>";
-                                                $setResults = '<button type="button" class="btn" data-toggle="modal" data-target="#germinationAddModal" title="Add Results" data-product-id="'.$row["product_id"].'" data-date-started="'.$germination_date.'">
-                                                        <i class="ti-pencil-alt"></i></button>';
-                                                $btnClass = "btn-warning";
+                                                $iconClass = !empty($row["percentage"]) ? "ti-eye" : "ti-pencil-alt";
+
+                                                $percent = !empty($row["percentage"]) ? htmlspecialchars($row["percentage"]) : 0;
+
+                                                [$btnView, $label] = match (true) {
+                                                    $percent >= 75 => ['btn-success', 'View Results'],
+                                                    $percent >= 1 => ['btn-danger', 'Failed Results'],
+                                                    default => ['', 'Add Results'],
+                                                };
+
+                                                $setResults = "<button type='button' class='btn $btnView' data-toggle='modal' data-target='#germinationAddModal' title='$label' 
+                                                                data-product-id='" . htmlspecialchars($row["product_id"]) . "' 
+                                                                data-date-started='" . htmlspecialchars($germination_date) . "' 
+                                                                data-percentage='" . $percent . "' 
+                                                                data-results='$testResults'>
+                                                                <i class='$iconClass'></i>
+                                                            </button>";
+
+                                                $btnClass = "btn-info";
+                                            } else {
+                                                $setResults = "";
                                             }
-                                            
-                                            echo "<tr data-product-id=".$row["product_id"].">
+
+                                            $viewResults = "";
+                                            if(!$percentage) {
+                                                $viewResults = "<button type='button' class='btn $btnClass' data-toggle='modal' data-target='#" . ($germination_date ? 'germinationWaitingModal' : 'germinationModal') . "' 
+                                                            title='" . ($germination_date ? 'Germinating...' : 'Add Germination Date') . "' 
+                                                            data-product-id='" . htmlspecialchars($row["product_id"]) . "' 
+                                                            data-date-started='" . htmlspecialchars($germination_date) . "'>
+                                                            $setDateHTML
+                                                        </button>";
+                                            }
+
+                                            echo "<tr data-product-id='" . htmlspecialchars($row["product_id"]) . "'>
                                                     <td>" . htmlspecialchars($row["category"]) . "</td>
                                                     <td>" . htmlspecialchars($row["commodity"]) . "</td>
                                                     <td>" . htmlspecialchars($row["variety"]) . "</td>
@@ -112,20 +127,21 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                                                     <td>" . htmlspecialchars($row["batch"]) . "</td>
                                                     <td>" . htmlspecialchars($row["lot"]) . "</td>
                                                     <td>" . htmlspecialchars($row["date_received"]) . "</td>
-                                                    <td>" . 
-                                                        "<span class='inventory'><span>" . htmlspecialchars($row["bags_received"]) ."</span>".
-                                                            "<i class='$classes'></i>" .
-                                                            "<span class=".$color_class."> ". htmlspecialchars($row["remaining_bags"]) ."</span>" . 
-                                                        "</span>" . "</td>
-                                                    <td><button type='button' class='btn ".$btnClass."' data-toggle='modal' data-target='#".($germination_date ? 'germinationWaitingModal' : 'germinationModal')."' title='".($germination_date ? 'Germinating...' : 'Add Germination Date')."' data-product-id=".$row["product_id"]." data-date-started=".htmlspecialchars($germination_date).">
-                                                        ".$setDateHTML."</button>".$setResults."</td>
-                                                    <td class='text-${class}'>" . htmlspecialchars($age) . " days old</td>
+                                                    <td>
+                                                        <span class='inventory'>
+                                                            <span>" . htmlspecialchars($bags_received) . "</span>
+                                                            <i class='$classes'></i>
+                                                            <span class='$color_class'>" . htmlspecialchars($remaining_bags) . "</span>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        $viewResults
+                                                        $setResults
+                                                    </td>
+                                                    <td class='text-$class'>" . htmlspecialchars($age) . " days old</td>
                                                 </tr>";
                                         }
-                                    } else {
-                                        echo "<tr><td colspan='9'>No records found</td></tr>";
-                                    }
-
+                                    } 
                                 ?>
                                 </tbody>
                             </table>
