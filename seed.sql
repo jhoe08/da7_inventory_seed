@@ -72,6 +72,8 @@ CREATE TABLE da7_varieties (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES da7_categories(category_id) ON DELETE CASCADE
 );
+ALTER TABLE `da7_varieties` 
+    ADD COLUMN seedclass VARCHAR(100);
 
 CREATE TABLE da7_commodities (
     commodity_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,

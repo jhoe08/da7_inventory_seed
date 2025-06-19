@@ -13,7 +13,6 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
 
 
 ?>  
-    
     <div class="row">
         <div class="col-md-8">
             <h3>Distribution Breakdown by Variety</h3>
@@ -207,8 +206,6 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                 }]
             }
         });
-
-
 
     </script>
 

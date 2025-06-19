@@ -72,18 +72,38 @@ setupModal('#germinationWaitingModal', function (button, modal) {
 
 // Germination Add Modal
 setupModal('#germinationAddModal', function (button, modal) {
-    var product_id = button.data('product-id');
-    var date_started = button.data('date-started');
-    var percentage = button.data('percentage');
-    var results = button.data('results');
+    const product_id = button.data('product-id');
+    const date_started = button.data('date-started');
+    const percentage = button.data('percentage');
+    const results = button.data('results');
 
-    modal.find('.modal-body input[name="product_id"]').val(product_id).prop("readonly", true);
-    modal.find('.modal-body input[name="test_date"]').val(date_started).prop("readonly", true);
+    const modalBody = modal.find('.modal-body');
 
-        modal.find('.modal-body input[name="percentage"]').val(percentage).prop("readonly", true);
-        modal.find('.modal-body textarea[name="test_results"]').val(results).prop("readonly", true);
-    
-    if (percentage) {
-        modal.find('.modal-body button[type="submit"]').prop('disabled', true);
+    // Set product and date fields as read-only
+    modalBody.find('input[name="product_id"]').val(product_id).prop("readonly", true);
+    modalBody.find('input[name="test_date"]').val(date_started).prop("readonly", true);
+
+    // Set percentage field
+    const percentageField = modalBody.find('input[name="percentage"]');
+    if (percentage != null && percentage !== "" && percentage !== 0) {
+        percentageField.val(percentage).prop("readonly", true);
+    } else {
+        percentageField.val('').prop("readonly", false);
+    }
+
+    // Set results field
+    const resultsField = modalBody.find('textarea[name="test_results"]');
+    if (results != null && results !== "") {
+        resultsField.val(results).prop("readonly", true);
+    } else {
+        resultsField.val('').prop("readonly", false);
+    }
+
+    // Disable submit button if both fields have values
+    const submitButton = modalBody.find('button[type="submit"]');
+    if ((percentage != null && percentage !== "" && percentage !== 0) && (results != null && results !== "")) {
+        submitButton.prop('disabled', true);
+    } else {
+        submitButton.prop('disabled', false);
     }
 });

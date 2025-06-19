@@ -8,6 +8,10 @@
         "Poor Labelling/Packaging",
         "Transfer_Warehouse"
     ]);
-
+    
+    define("SEEDCLASS",[
+        "Hybrid",
+        "Certified"
+    ])
 
 ?>

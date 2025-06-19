@@ -9,6 +9,7 @@
   	unset($_SESSION['username']);
   	header("location: stockin.php");
   }
+  include '../functions/_const.php';  
 ?>
 
 

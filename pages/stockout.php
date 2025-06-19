@@ -12,7 +12,6 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
             
             <?php 
                 include '../functions/_database.php';  
-                include '../functions/_const.php';  
             ?>
 
             <h2 class="text-center">Enter Beneficiary Details</h2>

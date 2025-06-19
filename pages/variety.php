@@ -26,18 +26,20 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                     <tr>
                         <td>ID</td>
                         <td>Variety Name</td>
+                        <td>Seed Class</td>
                         <td>Category</td>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                        $sql = "SELECT variety_id, variety_name, category_id FROM da7_varieties";
+                        $sql = "SELECT variety_id, variety_name, category_id, seedclass FROM da7_varieties";
                         $result = mysqli_query($conn, $sql);
 
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo "<tr>";
                                 echo "<td>" . $row['variety_id'] . "</td>";
                                 echo "<td>" . htmlspecialchars($row['variety_name']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['seedclass']) . "</td>";
                                 echo "<td>" . getCategoryName($getCategories, $row['category_id']) . "</td>";
                             echo "</tr>";
                         }
@@ -59,6 +61,15 @@ include_once(dirname(__FILE__) . "/../partials/sidebar.php");
                         <?php foreach ($categories as $category): ?>
                             <option value="<?= $category['category_id']; ?>"><?= $category['category_name']; ?></option>
                         <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="seedclass">Seed Class:</label>
+                    <select name="seedclass" class="form-control" required>
+                        <option value="">Select a Seed Class</option>
+                        <?php foreach (SEEDCLASS as $class) {
+                            echo "<option value='" . htmlspecialchars($class) . "'>" . htmlspecialchars($class) . "</option>";
+                        } ?>
                     </select>
                 </div>
                 <div class="form-group">

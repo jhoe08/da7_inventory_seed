@@ -52,7 +52,7 @@
                             <li class="">
                                 <a href="beneficiary.php" aria-expanded="true">
                                     <i class="ti-face-smile"></i>
-                                    <span>View all Beneficiaries</span>
+                                    <span>Distributions</span>
                                 </a>
                             </li>
                              <li class="sub-menu">
