@@ -8,7 +8,7 @@ $email    = "";
 $errors = array(); 
 
 // connect to the database
-$db = mysqli_connect('localhost', 'root', '', 'seed_inventory');
+$db = mysqli_connect('localhost', 'root', '', 'da7_seeds');
 if (mysqli_connect_errno())
     {
     echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -39,7 +39,7 @@ if (isset($_POST['reg_user'])) {
 
   // first check the database to make sure 
   // a user does not already exist with the same username and/or email
-  $user_check_query = "SELECT * FROM register WHERE username='$username' OR email='$email' LIMIT 1";
+  $user_check_query = "SELECT * FROM da7_register WHERE username='$username' OR email='$email' LIMIT 1";
   $result = mysqli_query($db, $user_check_query);
   $user = mysqli_fetch_assoc($result);
   
@@ -57,7 +57,7 @@ if (isset($_POST['reg_user'])) {
   if (count($errors) == 0) {
   	$password = md5($password_1);//encrypt the password before saving in the database
 
-  	$query = "INSERT INTO register (username,email,password_1,first_name,last_name,mobile) 
+  	$query = "INSERT INTO da7_register (username,email,password_1,first_name,last_name,mobile) 
   			  VALUES('$username', '$email', '$password','$first_name','$last_name',$mobile)";
   	mysqli_query($db, $query);
   	$_SESSION['username'] = $username;
@@ -90,12 +90,12 @@ if(isset($_POST['submit']))
 {
     echo "Password is invalid";
 }
-      $query = "SELECT * FROM register WHERE username='$username' AND password_1 ='$password'";
+      $query = "SELECT * FROM da7_register WHERE username='$username' AND password_1 ='$password'";
 		
 		
 		
 		
-		$sql="SELECT first_name,last_name FROM register WHERE username='$username' AND password_1 ='$password'";
+		$sql="SELECT first_name,last_name FROM da7_register WHERE username='$username' AND password_1 ='$password'";
 		$result=mysqli_query($db,$sql);  
 		$row=mysqli_fetch_assoc($result);
 	 

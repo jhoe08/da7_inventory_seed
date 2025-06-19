@@ -1,3 +1,14 @@
+-- Users
+CREATE TABLE da7_register (
+  product_id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(20) NOT NULL,
+  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
+  mobile BIGINT NOT NULL,
+  email VARCHAR(30) NOT NULL,
+  password_1 VARCHAR(50) NOT NULL
+);
+
 -- Create the Product Table
 CREATE TABLE da7_product (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
